@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CYBORG SYSTEMS — Next-generation human augmentation platform. Neural interfaces, skeletal reinforcement, optical augmentation. System v2.084.">
+  <title>CYBORG SYSTEMS // Augment Your Reality — v2.084</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+
+    :root {
+      --bg-primary:     #050810;
+      --bg-secondary:   #0A0F1E;
+      --bg-panel:       #0D1A2A;
+      --accent-cyan:    #00F5FF;
+      --accent-electric:#4D9EFF;
+      --accent-organic: #FF4B6E;
+      --accent-amber:   #FFB800;
+      --text-primary:   #E8F4FF;
+      --text-secondary: #7FA8C9;
+      --text-faint:     #2A4060;
+      --border-glow:    rgba(0,245,255,0.25);
+      --border-dim:     rgba(0,245,255,0.08);
+      --font-display:   'Orbitron', sans-serif;
+      --font-body:      'Share Tech Mono', monospace;
+      --font-label:     'Rajdhani', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 245, 255, 0.015) 2px,
+        rgba(0, 245, 255, 0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    a { color: var(--accent-electric); text-decoration: none; }
+    a:hover { color: var(--accent-cyan); }
+
+    img, svg { max-width: 100%; }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .section-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .btn-primary {
+      background: transparent;
+      color: var(--accent-cyan);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0,245,255,0.15), inset 0 0 15px rgba(0,245,255,0.05);
+    }
+    .btn-primary:hover {
+      background: rgba(0,245,255,0.1);
+      box-shadow: 0 0 30px rgba(0,245,255,0.3), inset 0 0 30px rgba(0,245,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--text-faint);
+    }
+    .btn-ghost:hover {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0,245,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+    .reveal-delay-6 { transition-delay: 0.6s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      body::after { display: none; }
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #particle-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 1;
+    }
+
+    .hero-vignette {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at center, transparent 40%, var(--bg-primary) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding: 0 1rem;
+    }
+
+    .reticle {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 220px; height: 220px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .reticle::before, .reticle::after {
+      content: '';
+      position: absolute;
+      border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 50%;
+    }
+    .reticle::before {
+      top: 0; left: 0; right: 0; bottom: 0;
+      animation: reticle-spin 20s linear infinite;
+      border-style: dashed;
+    }
+    .reticle::after {
+      top: 20px; left: 20px; right: 20px; bottom: 20px;
+      animation: reticle-spin 15s linear infinite reverse;
+      border-color: rgba(0,245,255,0.1);
+    }
+    @keyframes reticle-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .crosshair {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .crosshair::before, .crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(0,245,255,0.08);
+    }
+    .crosshair::before {
+      width: 400px; height: 1px;
+      top: 0; left: -200px;
+    }
+    .crosshair::after {
+      width: 1px; height: 400px;
+      top: -200px; left: 0;
+    }
+
+    .glitch-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 900;
+      color: var(--text-primary);
+      position: relative;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+    }
+
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+    .glitch::before {
+      color: var(--accent-cyan);
+      animation: glitch-1 3s infinite linear alternate-reverse;
+      clip-path: inset(0 0 80% 0);
+    }
+    .glitch::after {
+      color: var(--accent-organic);
+      animation: glitch-2 2.5s infinite linear alternate-reverse;
+      clip-path: inset(80% 0 0 0);
+    }
+
+    @keyframes glitch-1 {
+      0%, 85% { clip-path: inset(0 0 80% 0); transform: translate(0); }
+      86% { clip-path: inset(15% 0 60% 0); transform: translate(-4px, -2px); }
+      88% { clip-path: inset(50% 0 20% 0); transform: translate(3px, 1px); }
+      90% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 3px); }
+      92% { clip-path: inset(40% 0 30% 0); transform: translate(4px, -1px); }
+      94%, 100% { clip-path: inset(0 0 80% 0); transform: translate(0); }
+    }
+
+    @keyframes glitch-2 {
+      0%, 87% { clip-path: inset(80% 0 0 0); transform: translate(0); }
+      88% { clip-path: inset(60% 0 10% 0); transform: translate(3px, 2px); }
+      90% { clip-path: inset(20% 0 50% 0); transform: translate(-3px, -1px); }
+      92% { clip-path: inset(70% 0 5% 0); transform: translate(2px, -3px); }
+      94%, 100% { clip-path: inset(80% 0 0 0); transform: translate(0); }
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      color: var(--text-secondary);
+      margin-top: 1.2rem;
+      letter-spacing: 0.15em;
+    }
+
+    .hero-buttons {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .ekg-container {
+      position: absolute;
+      bottom: 80px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      z-index: 3;
+      overflow: hidden;
+      opacity: 0.4;
+    }
+    .ekg-line {
+      fill: none;
+      stroke: var(--accent-organic);
+      stroke-width: 2;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: ekg-draw 3s linear infinite;
+      filter: drop-shadow(0 0 4px var(--accent-organic));
+    }
+    @keyframes ekg-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      text-align: center;
+      color: var(--text-faint);
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+    }
+    .scroll-chevron {
+      display: block;
+      font-size: 1.2rem;
+      color: var(--accent-cyan);
+      animation: bounce 2s ease-in-out infinite;
+      margin-bottom: 0.3rem;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    .stats {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-dim);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        radial-gradient(circle, var(--border-dim) 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.5;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-right: 1px solid var(--border-dim);
+    }
+    .stat-item:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 900;
+      color: var(--accent-cyan);
+      display: block;
+      text-shadow: 0 0 20px rgba(0,245,255,0.3);
+    }
+
+    .stat-label {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    .features {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .features .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .features .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-top: 0.5rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 25px rgba(0,245,255,0.12), inset 0 0 25px rgba(0,245,255,0.03);
+      transform: translateY(-4px);
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      margin-bottom: 1.2rem;
+      color: var(--accent-cyan);
+      transition: transform 0.3s ease;
+    }
+    .feature-card:hover .feature-icon {
+      transform: scale(1.15);
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+      letter-spacing: 0.1em;
+    }
+
+    .feature-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .anatomy {
+      padding: 6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .anatomy .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .anatomy .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-top: 0.5rem;
+    }
+
+    .anatomy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .anatomy-figure {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 600px;
+    }
+
+    .anatomy-svg-container {
+      position: relative;
+      width: 340px;
+      height: 580px;
+    }
+
+    .anatomy-svg-container::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -10%;
+      width: 120%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      opacity: 0.6;
+      animation: scan-sweep 4s linear infinite;
+      z-index: 5;
+    }
+    @keyframes scan-sweep {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    .anatomy-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .aug-point {
+      animation: aug-pulse 2s ease-in-out infinite;
+    }
+    .aug-point:nth-child(2) { animation-delay: 0.3s; }
+    .aug-point:nth-child(3) { animation-delay: 0.6s; }
+    .aug-point:nth-child(4) { animation-delay: 0.9s; }
+    .aug-point:nth-child(5) { animation-delay: 1.2s; }
+
+    @keyframes aug-pulse {
+      0%, 100% { opacity: 0.6; r: 5; }
+      50% { opacity: 1; r: 8; }
+    }
+
+    .body-breathe {
+      animation: breathe 4s ease-in-out infinite;
+      transform-origin: center center;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.015); }
+    }
+
+    .anatomy-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .aug-label {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 1rem 1.2rem;
+      border-radius: 2px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .aug-label:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0,245,255,0.1);
+    }
+
+    .aug-label-name {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .aug-label-status {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-bar {
+      display: inline-block;
+      width: 100px;
+      height: 6px;
+      background: var(--text-faint);
+      border-radius: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+    .status-bar-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-electric));
+      border-radius: 1px;
+      box-shadow: 0 0 6px rgba(0,245,255,0.4);
+    }
+
+    .aug-label-spec {
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      font-style: normal;
+    }
+
+    .aug-label.organic .aug-label-name {
+      color: var(--accent-organic);
+    }
+    .aug-label.organic {
+      border-left-color: var(--accent-organic);
+    }
+    .aug-label.organic .status-bar-fill {
+      background: linear-gradient(90deg, var(--accent-organic), var(--accent-amber));
+      box-shadow: 0 0 6px rgba(255,75,110,0.4);
+    }
+
+    .timeline-section {
+      padding: 6rem 0;
+      background: var(--bg-secondary);
+      position: relative;
+    }
+
+    .timeline-section .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .timeline-section .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-top: 0.5rem;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-left: 60px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 29px;
+      width: 2px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--accent-cyan) 0px,
+        var(--accent-cyan) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+      background-size: 2px 16px;
+      animation: dash-move 1.5s linear infinite;
+      opacity: 0.4;
+    }
+    @keyframes dash-move {
+      to { background-position: 0 16px; }
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-left: 2rem;
+    }
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-badge {
+      position: absolute;
+      left: -42px;
+      top: 0;
+      width: 40px; height: 40px;
+      border: 2px solid var(--text-faint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      z-index: 1;
+      transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+    }
+
+    .timeline-item.active .timeline-badge {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0,245,255,0.3);
+    }
+
+    .timeline-phase {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .timeline-item.active {
+      padding: 1.5rem;
+      padding-left: 2rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-glow);
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(0,245,255,0.05);
+    }
+
+    .testimonials {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .testimonials .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .testimonials .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-top: 0.5rem;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .dossier-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 4px;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .dossier-card:hover {
+      border-color: rgba(0,245,255,0.2);
+      box-shadow: 0 0 20px rgba(0,245,255,0.06);
+    }
+
+    .classified-stamp {
+      position: absolute;
+      top: 15px; right: -10px;
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--accent-organic);
+      border: 2px solid var(--accent-organic);
+      padding: 0.2rem 0.8rem;
+      transform: rotate(-12deg);
+      opacity: 0.7;
+      letter-spacing: 0.15em;
+      pointer-events: none;
+    }
+
+    .operative-avatar {
+      width: 56px; height: 56px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bg-primary);
+      margin-bottom: 1rem;
+    }
+    .avatar-cyan { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-electric)); }
+    .avatar-red { background: linear-gradient(135deg, var(--accent-organic), var(--accent-amber)); }
+    .avatar-amber { background: linear-gradient(135deg, var(--accent-amber), var(--accent-electric)); }
+
+    .operative-name {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .dossier-quote {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+      border-left: 2px solid var(--text-faint);
+      padding-left: 1rem;
+    }
+
+    .signal-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 18px;
+    }
+    .signal-bar {
+      width: 6px;
+      background: var(--text-faint);
+      border-radius: 1px;
+    }
+    .signal-bar.active { background: var(--accent-cyan); box-shadow: 0 0 4px rgba(0,245,255,0.4); }
+    .signal-bar:nth-child(1) { height: 4px; }
+    .signal-bar:nth-child(2) { height: 7px; }
+    .signal-bar:nth-child(3) { height: 10px; }
+    .signal-bar:nth-child(4) { height: 14px; }
+    .signal-bar:nth-child(5) { height: 18px; }
+
+    .cta {
+      padding: 6rem 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse at center, rgba(0,245,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-rings {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(0,245,255,0.08);
+      border-radius: 50%;
+      animation: ring-pulse 4s ease-out infinite;
+    }
+    .ring:nth-child(1) { width: 200px; height: 200px; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 400px; height: 400px; animation-delay: 1s; }
+    .ring:nth-child(3) { width: 600px; height: 600px; animation-delay: 2s; }
+
+    @keyframes ring-pulse {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      margin-bottom: 1rem;
+    }
+
+    .cta-sub {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .cta-form {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .cta-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 0.9rem 1.2rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--text-faint);
+      border-right: none;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .cta-input:focus {
+      border-color: var(--accent-cyan);
+    }
+    .cta-input::placeholder {
+      color: var(--text-faint);
+    }
+
+    .cta-submit {
+      padding: 0.9rem 1.8rem;
+      background: transparent;
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .cta-submit:hover {
+      background: rgba(0,245,255,0.1);
+      box-shadow: 0 0 20px rgba(0,245,255,0.2);
+    }
+
+    .cta-secure {
+      color: var(--text-faint);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+    }
+
+    .cta-input:focus::placeholder {
+      color: transparent;
+    }
+    .terminal-cursor {
+      display: inline-block;
+      border-right: 2px solid var(--accent-cyan);
+      animation: cursor-blink 1s step-end infinite;
+    }
+    @keyframes cursor-blink {
+      0%, 100% { border-color: var(--accent-cyan); }
+      50% { border-color: transparent; }
+    }
+
+    .footer {
+      padding: 3rem 0 2rem;
+      position: relative;
+      background: var(--bg-secondary);
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      background-size: 200% 100%;
+      animation: footer-border 4s linear infinite;
+    }
+    @keyframes footer-border {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.15em;
+    }
+    .footer-logo span {
+      color: var(--accent-cyan);
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: var(--accent-cyan); }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-social a {
+      color: var(--text-faint);
+      transition: color 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+    }
+    .footer-social a:hover {
+      color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+    .footer-social svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-dim);
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 1024px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .anatomy-grid { grid-template-columns: 1fr; }
+      .anatomy-figure { min-height: 500px; }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-item {
+        border-right: none;
+        border-bottom: 1px solid var(--border-dim);
+      }
+      .stat-item:nth-child(odd) {
+        border-right: 1px solid var(--border-dim);
+      }
+      .stat-item:nth-last-child(-n+2) {
+        border-bottom: none;
+      }
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-nav { justify-content: center; }
+      .footer-social { justify-content: center; }
+      .timeline { padding-left: 50px; }
+      .timeline-item.active {
+        padding: 1.2rem;
+        padding-left: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      html { font-size: 14px; }
+      .container { padding: 0 1rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 220px; text-align: center; }
+      .cta-form { flex-direction: column; }
+      .cta-input { border-right: 1px solid var(--text-faint); min-width: 100%; }
+      .cta-submit { width: 100%; }
+      .anatomy-svg-container { width: 260px; height: 480px; }
+      .crosshair::before { width: 250px; left: -125px; }
+      .crosshair::after { height: 250px; top: -125px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .ekg-container { display: none; }
+      .anatomy-svg-container::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero" id="hero">
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <div class="hero-vignette"></div>
+    <div class="reticle" aria-hidden="true"></div>
+    <div class="crosshair" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="glitch-wrapper">
+        <h1 class="glitch" data-text="AUGMENT YOUR REALITY">AUGMENT YOUR REALITY</h1>
+      </div>
+      <p class="hero-subtitle">Where Human Meets Machine // System v2.084</p>
+      <div class="hero-buttons">
+        <a href="#cta" class="btn btn-primary" aria-label="Initialize augmentation process">[ INITIALIZE ]</a>
+        <a href="#features" class="btn btn-ghost" aria-label="Learn more about augmentation">[ LEARN MORE ]</a>
+      </div>
+    </div>
+
+    <div class="ekg-container" aria-hidden="true">
+      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" width="100%" height="60">
+        <polyline class="ekg-line"
+          points="0,30 100,30 120,30 140,30 160,30 180,30 200,30 220,30 240,10 260,50 280,5 300,55 310,30 330,30 400,30 420,30 440,30 460,30 480,30 500,30 520,30 540,30 560,10 580,50 600,5 620,55 630,30 650,30 720,30 740,30 760,30 780,30 800,30 820,30 840,30 860,10 880,50 900,5 920,55 930,30 950,30 1020,30 1040,30 1060,30 1080,30 1100,30 1120,30 1140,30 1160,10 1180,50 1200,30"/>
+      </svg>
+    </div>
+
+    <div class="scroll-indicator" aria-hidden="true">
+      <span class="scroll-chevron">⌄</span>
+      SCROLL TO EXPLORE
+    </div>
+  </header>
+
+  <main>
+
+    <section class="stats" id="stats" aria-label="System metrics">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-number counter" data-target="98.7" data-decimals="1" data-suffix="%">0</span>
+            <span class="stat-label">Neural Sync Rate</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number counter" data-target="0.003" data-decimals="3" data-suffix="ms">0</span>
+            <span class="stat-label">Response Latency</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number counter" data-target="2.4" data-decimals="1" data-suffix="M">0</span>
+            <span class="stat-label">Augmented Users</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" style="font-size:clamp(1.2rem,2vw,1.8rem)">ISO-9001</span>
+            <span class="stat-label">Security Certified</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features" aria-label="Augmentation capabilities">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// Capabilities</span>
+          <h2>[ Augmentation Modules ]</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card reveal reveal-delay-1">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="24" cy="18" r="10"/>
+              <path d="M14 28c-2 3-3 7-3 11h26c0-4-1-8-3-11"/>
+              <circle cx="24" cy="18" r="3" fill="currentColor" stroke="none"/>
+              <line x1="24" y1="8" x2="24" y2="5"/>
+              <line x1="30" y1="10" x2="33" y2="8"/>
+              <line x1="18" y1="10" x2="15" y2="8"/>
+              <line x1="32" y1="16" x2="36" y2="16"/>
+              <line x1="16" y1="16" x2="12" y2="16"/>
+            </svg>
+            <h3>Neural Interface</h3>
+            <p>Direct brain-to-device communication at synaptic speed. Bi-directional cortex mesh enables sub-millisecond data relay across 4.2 billion neural pathways.</p>
+          </div>
+          <div class="feature-card reveal reveal-delay-2">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="18" y="4" width="12" height="40" rx="3"/>
+              <line x1="18" y1="12" x2="30" y2="12"/>
+              <line x1="18" y1="20" x2="30" y2="20"/>
+              <line x1="18" y1="28" x2="30" y2="28"/>
+              <line x1="18" y1="36" x2="30" y2="36"/>
+              <line x1="12" y1="16" x2="18" y2="16"/>
+              <line x1="30" y1="16" x2="36" y2="16"/>
+              <line x1="12" y1="32" x2="18" y2="32"/>
+              <line x1="30" y1="32" x2="36" y2="32"/>
+              <circle cx="12" cy="16" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="36" cy="16" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="32" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="36" cy="32" r="2" fill="currentColor" stroke="none"/>
+            </svg>
+            <h3>Skeletal Reinforcement</h3>
+            <p>Nano-lattice exoskeletal layer with 340% impact absorption. Bio-compatible titanium-ceramic composite rated for 12,000 PSI load tolerance.</p>
+          </div>
+          <div class="feature-card reveal reveal-delay-3">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="20" y="4" width="8" height="32" rx="4"/>
+              <circle cx="24" cy="40" r="6"/>
+              <circle cx="24" cy="40" r="3" fill="currentColor" stroke="none"/>
+              <line x1="30" y1="12" x2="36" y2="12"/>
+              <line x1="30" y1="18" x2="34" y2="18"/>
+              <line x1="30" y1="24" x2="36" y2="24"/>
+              <line x1="30" y1="30" x2="34" y2="30"/>
+            </svg>
+            <h3>Thermal Regulation</h3>
+            <p>Bio-mechanical thermostat maintaining optimal core temperature at 36.8°C ±0.02°. Active nano-coolant circulates through 1,200 micro-channels.</p>
+          </div>
+          <div class="feature-card reveal reveal-delay-4">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <ellipse cx="24" cy="24" rx="18" ry="10"/>
+              <circle cx="24" cy="24" r="6"/>
+              <circle cx="24" cy="24" r="2.5" fill="currentColor" stroke="none"/>
+              <line x1="24" y1="14" x2="24" y2="11"/>
+              <line x1="24" y1="34" x2="24" y2="37"/>
+              <line x1="34" y1="18" x2="37" y2="16"/>
+              <line x1="14" y1="30" x2="11" y2="32"/>
+            </svg>
+            <h3>Optical Augmentation</h3>
+            <p>8K retinal projection with real-time AR overlay and 300m optical zoom. Multi-spectrum analysis: infrared, ultraviolet, and electromagnetic field detection.</p>
+          </div>
+          <div class="feature-card reveal reveal-delay-5">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M24 4L6 12v12c0 11 8 18 18 22 10-4 18-11 18-22V12L24 4z"/>
+              <rect x="19" y="18" width="10" height="12" rx="2"/>
+              <circle cx="24" cy="23" r="2" fill="currentColor" stroke="none"/>
+              <line x1="24" y1="25" x2="24" y2="28"/>
+            </svg>
+            <h3>Cortex Firewall</h3>
+            <p>Military-grade 512-bit quantum encryption protecting cognitive data streams. Zero-knowledge proof authentication with 0.0001% breach probability.</p>
+          </div>
+          <div class="feature-card reveal reveal-delay-6">
+            <svg class="feature-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="24" cy="24" r="16"/>
+              <polyline points="12,24 18,24 21,16 24,32 27,20 30,24 36,24"/>
+              <circle cx="24" cy="24" r="6" stroke-dasharray="3 3"/>
+              <circle cx="24" cy="8" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="24" cy="40" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="8" cy="24" r="2" fill="currentColor" stroke="none"/>
+              <circle cx="40" cy="24" r="2" fill="currentColor" stroke="none"/>
+            </svg>
+            <h3>Bio-Sync Protocol</h3>
+            <p>Real-time health monitoring fused with system diagnostics. Continuous bio-telemetry across 847 physiological markers at 10,000 samples per second.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="anatomy" id="anatomy" aria-label="Augmentation anatomy visualization">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// System Anatomy</span>
+          <h2>[ Human-Machine Integration Map ]</h2>
+        </div>
+        <div class="anatomy-grid">
+          <div class="anatomy-figure reveal">
+            <div class="anatomy-svg-container">
+              <svg class="anatomy-svg body-breathe" viewBox="0 0 340 580" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Detailed human body diagram showing augmentation points">
+                <g fill="none" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="
+                    M170 12
+                    C152 12, 138 22, 134 38
+                    C131 52, 132 68, 136 78
+                    C138 86, 142 92, 148 96
+                    L148 100 C146 102, 142 106, 140 110
+                    L138 112
+                    C122 116, 100 124, 88 132
+                    C74 142, 60 148, 52 158
+                    C44 168, 38 180, 34 194
+                    C30 210, 28 228, 26 244
+                    C24 262, 24 278, 26 290
+                    C27 296, 30 300, 28 308
+                    C26 316, 22 326, 18 334
+                    C16 340, 14 344, 16 348
+                    C18 352, 24 352, 30 350
+                    C34 348, 38 344, 42 338
+                    C46 330, 50 318, 52 306
+                    C54 296, 58 284, 62 270
+                    C66 256, 70 244, 74 234
+                    C78 226, 82 220, 86 216
+                    L88 214
+                    C90 230, 92 248, 96 264
+                    C98 278, 100 290, 104 302
+                    C106 316, 108 328, 110 342
+                    C112 358, 114 376, 116 394
+                    C118 412, 118 430, 118 448
+                    C118 460, 116 472, 114 484
+                    C112 496, 110 508, 108 518
+                    C106 528, 104 536, 102 544
+                    C100 550, 96 556, 92 560
+                    C88 564, 86 566, 86 568
+                    C86 572, 90 574, 96 574
+                    C104 574, 112 572, 118 568
+                    C122 564, 126 558, 128 552
+                    C130 544, 132 534, 134 524
+                    C136 512, 138 498, 140 484
+                    C142 468, 144 452, 146 438
+                    C148 424, 150 410, 152 398
+                    L156 394
+                    C158 396, 164 398, 170 398
+                    C176 398, 182 396, 184 394
+                    L188 398
+                    C190 410, 192 424, 194 438
+                    C196 452, 198 468, 200 484
+                    C202 498, 204 512, 206 524
+                    C208 534, 210 544, 212 552
+                    C214 558, 218 564, 222 568
+                    C228 572, 236 574, 244 574
+                    C250 574, 254 572, 254 568
+                    C254 566, 252 564, 248 560
+                    C244 556, 240 550, 238 544
+                    C236 536, 234 528, 232 518
+                    C230 508, 228 496, 226 484
+                    C224 472, 222 460, 222 448
+                    C222 430, 222 412, 224 394
+                    C226 376, 228 358, 230 342
+                    C232 328, 234 316, 236 302
+                    C240 290, 242 278, 244 264
+                    C248 248, 250 230, 252 214
+                    L254 216
+                    C258 220, 262 226, 266 234
+                    C270 244, 274 256, 278 270
+                    C282 284, 286 296, 288 306
+                    C290 318, 294 330, 298 338
+                    C302 344, 306 348, 310 350
+                    C316 352, 322 352, 324 348
+                    C326 344, 324 340, 322 334
+                    C318 326, 314 316, 312 308
+                    C310 300, 313 296, 314 290
+                    C316 278, 316 262, 314 244
+                    C312 228, 310 210, 306 194
+                    C302 180, 296 168, 288 158
+                    C280 148, 266 142, 252 132
+                    C240 124, 218 116, 202 112
+                    L200 110
+                    C198 106, 194 102, 192 100
+                    L192 96
+                    C198 92, 202 86, 204 78
+                    C208 68, 209 52, 206 38
+                    C202 22, 188 12, 170 12Z
+                  " stroke="var(--text-secondary)" stroke-width="1.5" fill="rgba(127,168,201,0.03)" opacity="0.8"/>
+
+                  <g stroke="var(--text-faint)" stroke-width="0.6" opacity="0.5">
+                    <ellipse cx="158" cy="50" rx="5" ry="3"/>
+                    <ellipse cx="182" cy="50" rx="5" ry="3"/>
+                    <line x1="170" y1="56" x2="170" y2="66"/>
+                    <path d="M162 72 Q170 78 178 72"/>
+                    <path d="M134 48 Q130 54 134 62"/>
+                    <path d="M206 48 Q210 54 206 62"/>
+                    <path d="M148 112 Q130 118 100 130"/>
+                    <path d="M192 112 Q210 118 240 130"/>
+                    <path d="M120 148 Q140 162 170 158 Q200 162 220 148"/>
+                    <path d="M128 168 Q148 178 170 174 Q192 178 212 168" opacity="0.3"/>
+                    <path d="M132 184 Q150 194 170 190 Q190 194 208 184" opacity="0.3"/>
+                    <line x1="170" y1="170" x2="170" y2="260"/>
+                    <circle cx="170" cy="232" r="3"/>
+                    <path d="M118 270 Q140 285 170 280 Q200 285 222 270"/>
+                    <path d="M86 134 Q78 150 70 168"/>
+                    <path d="M254 134 Q262 150 270 168"/>
+                    <path d="M74 180 Q68 200 58 226" opacity="0.3"/>
+                    <path d="M266 180 Q272 200 282 226" opacity="0.3"/>
+                    <ellipse cx="134" cy="436" rx="10" ry="6" opacity="0.3"/>
+                    <ellipse cx="206" cy="436" rx="10" ry="6" opacity="0.3"/>
+                  </g>
+                </g>
+
+                <g stroke="var(--accent-cyan)" stroke-width="0.8" fill="none" opacity="0.45">
+                  <path d="M170 80 L170 96 L170 112 L170 160 L170 200 L170 260 L170 300 L170 340 L170 380"
+                    stroke-dasharray="8 4" stroke-width="1.2"/>
+                  <path d="M150 30 L158 38 L170 32 L182 38 L190 30" stroke-dasharray="3 3"/>
+                  <path d="M146 42 L155 48 L165 40 L175 48 L185 42 L194 48" stroke-dasharray="3 3"/>
+                  <path d="M142 56 L152 52 L162 58 L170 54 L178 58 L188 52 L198 56" stroke-dasharray="3 3"/>
+                  <path d="M164 96 L170 100 L176 96" stroke-dasharray="2 3"/>
+                  <path d="M162 104 L170 108 L178 104" stroke-dasharray="2 3"/>
+                  <path d="M120 140 L135 148 L155 144 L170 150 L185 144 L205 148 L220 140" stroke-dasharray="4 3"/>
+                  <path d="M126 158 L142 166 L158 160 L170 168 L182 160 L198 166 L214 158" stroke-dasharray="4 3"/>
+                  <circle cx="155" cy="172" r="14" stroke-dasharray="4 4" opacity="0.5"/>
+                  <circle cx="155" cy="172" r="8" stroke-dasharray="2 3" opacity="0.3"/>
+                  <path d="M142 200 L155 208 L170 202 L185 208 L198 200" stroke-dasharray="4 3"/>
+                  <path d="M146 224 L158 230 L170 226 L182 230 L194 224" stroke-dasharray="4 3"/>
+                  <path d="M130 272 L148 280 L170 276 L192 280 L210 272" stroke-dasharray="3 4"/>
+                  <path d="M100 132 L86 146 L76 170 L66 200 L54 234 L42 270 L32 300 L24 330" stroke-dasharray="5 4" opacity="0.5"/>
+                  <path d="M88 150 L78 176 L68 206" stroke-dasharray="3 4" opacity="0.35"/>
+                  <path d="M240 132 L254 146 L264 170 L274 200 L286 234 L298 270 L308 300 L316 330" stroke-dasharray="5 4" opacity="0.5"/>
+                  <path d="M252 150 L262 176 L272 206" stroke-dasharray="3 4" opacity="0.35"/>
+                  <path d="M148 310 L140 360 L134 410 L130 440 L126 470 L120 510 L114 550" stroke-dasharray="5 4" opacity="0.5"/>
+                  <path d="M138 330 L132 370 L128 400" stroke-dasharray="3 4" opacity="0.3"/>
+                  <path d="M192 310 L200 360 L206 410 L210 440 L214 470 L220 510 L226 550" stroke-dasharray="5 4" opacity="0.5"/>
+                  <path d="M202 330 L208 370 L212 400" stroke-dasharray="3 4" opacity="0.3"/>
+                  <path d="M100 200 L130 210 L170 204 L210 210 L240 200" stroke-dasharray="6 3" opacity="0.25"/>
+                </g>
+
+                <g stroke="var(--accent-amber)" stroke-width="0.5" fill="none" opacity="0.2">
+                  <path d="M140 138 Q155 148 170 144 Q185 148 200 138"/>
+                  <path d="M136 152 Q153 162 170 158 Q187 162 204 152"/>
+                  <path d="M134 166 Q152 176 170 172 Q188 176 206 166"/>
+                  <path d="M136 180 Q152 190 170 186 Q188 190 204 180"/>
+                  <line x1="166" y1="120" x2="174" y2="120"/>
+                  <line x1="166" y1="136" x2="174" y2="136"/>
+                  <line x1="166" y1="152" x2="174" y2="152"/>
+                  <line x1="166" y1="168" x2="174" y2="168"/>
+                  <line x1="166" y1="184" x2="174" y2="184"/>
+                  <line x1="166" y1="200" x2="174" y2="200"/>
+                  <line x1="166" y1="216" x2="174" y2="216"/>
+                  <line x1="166" y1="232" x2="174" y2="232"/>
+                  <line x1="166" y1="248" x2="174" y2="248"/>
+                </g>
+
+                <circle cx="170" cy="28" r="5" fill="var(--accent-cyan)" opacity="0.7">
+                  <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="170" cy="28" r="14" stroke="var(--accent-cyan)" stroke-width="0.5" fill="none" opacity="0.3">
+                  <animate attributeName="r" values="14;22;14" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="158" cy="50" r="4" fill="var(--accent-electric)" opacity="0.7">
+                  <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="182" cy="50" r="4" fill="var(--accent-electric)" opacity="0.7">
+                  <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="155" cy="172" r="6" fill="var(--accent-organic)" opacity="0.7">
+                  <animate attributeName="r" values="6;10;6" dur="1.4s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.7;1;0.7" dur="1.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="155" cy="172" r="16" stroke="var(--accent-organic)" stroke-width="0.5" fill="none" opacity="0.2">
+                  <animate attributeName="r" values="16;26;16" dur="1.4s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.2;0;0.2" dur="1.4s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="170" cy="230" r="5" fill="var(--accent-cyan)" opacity="0.6">
+                  <animate attributeName="r" values="5;8;5" dur="3s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="92" cy="136" r="4" fill="var(--accent-amber)" opacity="0.6">
+                  <animate attributeName="r" values="4;6;4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="248" cy="136" r="4" fill="var(--accent-amber)" opacity="0.6">
+                  <animate attributeName="r" values="4;6;4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="66" cy="204" r="3.5" fill="var(--accent-amber)" opacity="0.5">
+                  <animate attributeName="r" values="3.5;5.5;3.5" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="274" cy="204" r="3.5" fill="var(--accent-amber)" opacity="0.5">
+                  <animate attributeName="r" values="3.5;5.5;3.5" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="134" cy="436" r="4" fill="var(--accent-amber)" opacity="0.5">
+                  <animate attributeName="r" values="4;6;4" dur="2.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="206" cy="436" r="4" fill="var(--accent-amber)" opacity="0.5">
+                  <animate attributeName="r" values="4;6;4" dur="2.6s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="34" cy="304" r="3" fill="var(--accent-cyan)" opacity="0.5">
+                  <animate attributeName="r" values="3;5;3" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+
+                <circle cx="306" cy="304" r="3" fill="var(--accent-cyan)" opacity="0.5">
+                  <animate attributeName="r" values="3;5;3" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+
+                <g font-family="'Share Tech Mono', monospace" font-size="7" fill="var(--accent-cyan)" opacity="0.35">
+                  <text x="180" y="30">NCX-4.2</text>
+                  <text x="196" y="52">OPT-8K</text>
+                  <text x="172" y="175">♥ BIO</text>
+                  <text x="180" y="232">CPU</text>
+                  <text x="252" y="140">SK-L</text>
+                  <text x="56" y="140">SK-R</text>
+                </g>
+
+              </svg>
+            </div>
+          </div>
+
+          <div class="anatomy-labels">
+            <div class="aug-label reveal reveal-delay-1">
+              <div class="aug-label-name">Neural Cortex Interface</div>
+              <div class="aug-label-status">
+                ONLINE <div class="status-bar"><div class="status-bar-fill" style="width:97%"></div></div> 97%
+              </div>
+              <div class="aug-label-spec">// Type: Synaptic mesh v4.2 | Bandwidth: 840 Tbps</div>
+            </div>
+            <div class="aug-label reveal reveal-delay-2">
+              <div class="aug-label-name">Optical Array</div>
+              <div class="aug-label-status">
+                ONLINE <div class="status-bar"><div class="status-bar-fill" style="width:94%"></div></div> 94%
+              </div>
+              <div class="aug-label-spec">// Type: Retinal HUD mk7 | Resolution: 16K per eye</div>
+            </div>
+            <div class="aug-label organic reveal reveal-delay-3">
+              <div class="aug-label-name">Cardiac Bio-Engine</div>
+              <div class="aug-label-status">
+                ACTIVE <div class="status-bar"><div class="status-bar-fill" style="width:99%"></div></div> 99%
+              </div>
+              <div class="aug-label-spec">// Type: Hybrid pump v2.1 | Output: 340 BPM max</div>
+            </div>
+            <div class="aug-label reveal reveal-delay-4">
+              <div class="aug-label-name">Core Processor Unit</div>
+              <div class="aug-label-status">
+                ONLINE <div class="status-bar"><div class="status-bar-fill" style="width:88%"></div></div> 88%
+              </div>
+              <div class="aug-label-spec">// Type: Quantum-organic hybrid | Clock: 4.8 PHz</div>
+            </div>
+            <div class="aug-label reveal reveal-delay-5">
+              <div class="aug-label-name">Skeletal Lattice Network</div>
+              <div class="aug-label-status">
+                ONLINE <div class="status-bar"><div class="status-bar-fill" style="width:92%"></div></div> 92%
+              </div>
+              <div class="aug-label-spec">// Type: Ti-ceramic nano-weave | Tensile: 12,000 PSI</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section" id="process" aria-label="Integration process phases">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// Integration Protocol</span>
+          <h2>[ Augmentation Phases ]</h2>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item reveal reveal-delay-1">
+            <div class="timeline-badge">01</div>
+            <span class="timeline-phase">Phase 01</span>
+            <h3 class="timeline-title">Biological Assessment & Neural Mapping</h3>
+            <p class="timeline-desc">Full-spectrum bio-scan identifies genetic markers, neural pathway density, and tissue compatibility. 847 physiological parameters catalogued over 72-hour observation window. Rejection probability calculated to within 0.001%.</p>
+          </div>
+          <div class="timeline-item reveal reveal-delay-2">
+            <div class="timeline-badge">02</div>
+            <span class="timeline-phase">Phase 02</span>
+            <h3 class="timeline-title">Nano-Integration Calibration</h3>
+            <p class="timeline-desc">Molecular-scale fabrication of bio-compatible augmentation components. Nano-assemblers deployed to target sites via bloodstream. Integration points reinforced with titanium-ceramic nano-lattice over 14-day fusion period.</p>
+          </div>
+          <div class="timeline-item active reveal reveal-delay-3">
+            <div class="timeline-badge">03</div>
+            <span class="timeline-phase">Phase 03 — Current</span>
+            <h3 class="timeline-title">Cognitive Interface Synchronization</h3>
+            <p class="timeline-desc">Neural mesh activation and cortex-device handshake protocol initiated. Bi-directional synaptic relay calibrated across 4.2 billion pathways. Consciousness integration verified through 128-point cognitive benchmark.</p>
+          </div>
+          <div class="timeline-item reveal reveal-delay-4">
+            <div class="timeline-badge">04</div>
+            <span class="timeline-phase">Phase 04</span>
+            <h3 class="timeline-title">Field Deployment & Continuous Optimization</h3>
+            <p class="timeline-desc">Operative cleared for field deployment. Continuous telemetry monitored via encrypted satellite uplink. Firmware updates pushed OTA at 6-week intervals. Performance optimization engine adapts to operator behavior patterns.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="testimonials" id="operatives" aria-label="Operative field reports">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// Declassified Field Reports</span>
+          <h2>[ Operative Testimonials ]</h2>
+        </div>
+        <div class="testimonials-grid">
+
+          <div class="dossier-card reveal reveal-delay-1">
+            <span class="classified-stamp">CLASSIFIED</span>
+            <div class="operative-avatar avatar-cyan">E7</div>
+            <div class="operative-name">OPERATIVE // ECHO-7</div>
+            <blockquote class="dossier-quote">
+              "Neural sync reduced my target acquisition time from 1.2s to 0.003s. The optical overlay integrates threat assessment data faster than I can consciously process. After 14 months deployed, the augmentations feel more natural than my original biology."
+            </blockquote>
+            <div class="signal-bars" aria-label="Signal strength: 5 out of 5">
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+            </div>
+          </div>
+
+          <div class="dossier-card reveal reveal-delay-2">
+            <span class="classified-stamp">CLASSIFIED</span>
+            <div class="operative-avatar avatar-red">V3</div>
+            <div class="operative-name">OPERATIVE // VIPER-3</div>
+            <blockquote class="dossier-quote">
+              "Skeletal reinforcement absorbed a 4-story impact with zero fractures. The thermal regulation maintained core temp at 36.8°C in -40° field conditions. Bio-sync flagged an anomalous cardiac rhythm 6 hours before standard diagnostics detected it."
+            </blockquote>
+            <div class="signal-bars" aria-label="Signal strength: 4 out of 5">
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar"></div>
+            </div>
+          </div>
+
+          <div class="dossier-card reveal reveal-delay-3">
+            <span class="classified-stamp">CLASSIFIED</span>
+            <div class="operative-avatar avatar-amber">K9</div>
+            <div class="operative-name">OPERATIVE // KESTREL-9</div>
+            <blockquote class="dossier-quote">
+              "The cortex firewall intercepted 340 intrusion attempts during a 72-hour operation in hostile cyber-territory. Zero cognitive data compromised. I trust the encryption layer more than any physical barrier I've operated behind."
+            </blockquote>
+            <div class="signal-bars" aria-label="Signal strength: 4 out of 5">
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar active"></div>
+              <div class="signal-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="cta" aria-label="Contact and request augmentation">
+      <div class="cta-rings" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+      </div>
+      <div class="cta-content container">
+        <div class="reveal">
+          <span class="section-label">// Initiate Sequence</span>
+          <h2>Ready to Evolve?</h2>
+          <p class="cta-sub">Initiate your augmentation sequence. Limited slots available in Cycle 084. All submissions encrypted and processed within 48 standard hours.</p>
+          <form class="cta-form" id="cta-form" aria-label="Augmentation request form">
+            <input type="email" class="cta-input" id="cta-email" placeholder="enter_operator_id@domain.ext" aria-label="Email address" required>
+            <button type="submit" class="cta-submit" id="cta-submit-btn">[ SUBMIT REQUEST ]</button>
+          </form>
+          <p class="cta-secure">// SYSTEM SECURE — 256-BIT ENCRYPTED //</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo"><span>CYBORG</span> SYSTEMS</div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#features">NEURAL NET</a>
+          <a href="#anatomy">AUGMENTATION</a>
+          <a href="#process">PROTOCOLS</a>
+          <a href="#operatives">FIELD OPS</a>
+          <a href="#cta">CONTACT</a>
+        </nav>
+        <div class="footer-social" aria-label="Social links">
+          <a href="#" aria-label="Network hub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+          </a>
+          <a href="#" aria-label="Data feed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4M4 12h4M4 20l4-4"/><rect x="12" y="4" width="8" height="16" rx="2"/><line x1="16" y1="8" x2="16" y2="16"/></svg>
+          </a>
+          <a href="#" aria-label="Secure channel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="Broadcast">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.636 18.364A9 9 0 0 1 12 3a9 9 0 0 1 6.364 15.364"/><path d="M8.464 15.536A5 5 0 0 1 12 7a5 5 0 0 1 3.536 8.536"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2084 CYBORG SYSTEMS CORP // ALL RIGHTS RESERVED // EST. 2041 // SYSTEM v2.084
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    
+    (function() {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let animId;
+      const isMobile = window.innerWidth < 768;
+      const PARTICLE_COUNT = isMobile ? 40 : 80;
+      const CONNECTION_DIST = 150;
+
+      function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+
+      function createParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            r: Math.random() * 1.5 + 0.5
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CONNECTION_DIST) {
+              const alpha = (1 - dist / CONNECTION_DIST) * 0.2;
+              ctx.strokeStyle = `rgba(0, 245, 255, ${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw particles
+        for (const p of particles) {
+          ctx.fillStyle = 'rgba(0, 245, 255, 0.6)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Move
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Wrap around
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+        }
+
+        animId = requestAnimationFrame(draw);
+      }
+
+      resize();
+      createParticles();
+      draw();
+
+      window.addEventListener('resize', function() {
+        resize();
+        createParticles();
+      });
+    })();
+
+    (function() {
+      const reveals = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      reveals.forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+    
+    (function() {
+      const counters = document.querySelectorAll('.counter');
+
+      function animateCounter(el) {
+        const target = parseFloat(el.dataset.target);
+        const decimals = parseInt(el.dataset.decimals) || 0;
+        const suffix = el.dataset.suffix || '';
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function easeOutQuart(t) {
+          return 1 - Math.pow(1 - t, 4);
+        }
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easedProgress = easeOutQuart(progress);
+          const current = target * easedProgress;
+          el.textContent = current.toFixed(decimals) + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+
+    (function() {
+      const form = document.getElementById('cta-form');
+      const btn = document.getElementById('cta-submit-btn');
+      const emailInput = document.getElementById('cta-email');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (emailInput.value && emailInput.checkValidity()) {
+          btn.textContent = '[ REQUEST SUBMITTED ]';
+          btn.style.borderColor = '#00FF88';
+          btn.style.color = '#00FF88';
+          btn.style.boxShadow = '0 0 20px rgba(0,255,136,0.2)';
+          emailInput.value = '';
+          setTimeout(function() {
+            btn.textContent = '[ SUBMIT REQUEST ]';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.style.boxShadow = '';
+          }, 3000);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
